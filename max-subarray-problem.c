@@ -26,11 +26,11 @@ int maxSumSubArrayN3(int* arr, int length){
 		for(int index_start = 0; index_start < length; ++index_start){
 			if(index_start + sub_array_size > length){
 				break;
-      }    
+      			}    
 			int sum = 0;
 			for(int i = index_start; i < (index_start + sub_array_size); i++){	
 				sum += arr[i];
-      }
+      			}
 			ans = max(ans,sum);
 		}
 	}
@@ -45,7 +45,7 @@ int maxSumSubArrayN2(int* arr, int length){
 		for(int sub_array_size = 1; sub_array_size <= length; ++sub_array_size){
 			if(index_start + sub_array_size > length){	
 				break;
-            }
+           		}
 			sum += arr[index_start + sub_array_size - 1];
 			ans = max(ans, sum);
 		}
@@ -112,19 +112,19 @@ int maxSumSubArrayN(int* arr, int n){
 	int ans = arr[0], sum = 0;
 	for(int i = 1; i < n; ++i){
 		ans = max(ans,arr[i]);
-  }	
+  	}	
 	if(ans < 0){				
-		return ans; // here we check whether the max subarray is a negative number
-  }             // and if so, we return it
+	    return ans;      // here we check whether the max subarray is a negative number
+  	}	             // and if so, we return it
 	ans = 0;
 	for(int i = 0; i < n; ++i){
-		if(sum + arr[i] > 0){
-			sum += arr[i];
-    }    
-		else{
-			sum  = 0;
-    }    
-		ans = max(ans, sum);	
+	    if(sum + arr[i] > 0){
+		sum += arr[i];
+    	    }    
+	    else{
+		sum  = 0;
+            }    
+	    ans = max(ans, sum);	
 	}
 	return ans;
 }
