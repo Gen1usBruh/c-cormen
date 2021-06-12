@@ -29,10 +29,6 @@
 // In fact, any split of constant proportionality yields a recursion tree of depth θ(lgn), 
 // where the cost at each level is O(n). The running time is therefore O(nlgn), whenever 
 // the split has constant proportionality.
-//
-//
-//
-
 int partition(int* a, int low, int high){
     int x = a[high]; //pivot
     int i = low;     //partition index
@@ -66,7 +62,6 @@ void quickSort(int* a, int low, int high){
 //  we will select a randomly chosen element. 
 // Because we randomly choose the pivot element, we expect the split of
 // the input array to be reasonably well balanced on average. 
-
 int randPartition(int* a, int low, int high){
     srand(time(NULL));
     int i = low + rand() % (high - low);
