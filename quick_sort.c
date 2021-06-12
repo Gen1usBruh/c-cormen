@@ -84,6 +84,39 @@ void randQuickSort(int* a, int low, int high){
 }
 
 
+// The original partition scheme described by Hoare uses two indices that start at the ends of the array being partioned,
+// then move toward each other, until they detect an inversion and swap inverted elements.
+// When indices meet,the algorithm stops and returns the final index.
+int hoarePartition(int* a, int low, int high){
+    int x  = a[low];
+    int i = low - 1;
+    int j = high;
+    while(1){
+        do{
+            --j;
+        }while (a[j] > x);
+        do{
+            ++i;
+        }while (a[i] < x);
+        if(i < j){
+            int tmp = a[i];
+            a[i] = a[j];
+            a[j] = tmp;
+        }
+        else{
+            return j;
+        }
+    }
+}
+void hoareQuickSort(int* a, int low, int high){
+    if(low < high){
+        int pIndex = hoarePartition(a, low, high);
+        quickSort(a, low, pIndex - 1);
+        quickSort(a, pIndex + 1, high);
+    }
+}
+
+
 int main(int argc, char* argv[]){
   
     int arr[10] = {6, 2, 8, 5, 4, 9, 3, 10, 1, 7};
@@ -92,6 +125,7 @@ int main(int argc, char* argv[]){
 
     quickSort(arr, 0, length - 1);
 //     randQuickSort(arr, 0, length - 1);
+//     hoareQuickSort(arr, 0, length - 1);
 
     for (int i = 0; i < length; i++){
         printf("%d ", arr[i]);
