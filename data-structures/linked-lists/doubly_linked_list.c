@@ -1,10 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// A linked list is a data structure in which the objects are arranged in a linear order.
+// Unlike an array, however, in which the linear order is determined by the array
+// indices, the order in a linked list is determined by a pointer in each object.
+//
+// A list may have one of several forms. It may be either singly linked or doubly
+// linked, it may be sorted or not, and it may be circular or not. If a list is singly
+// linked, we omit the pointer to the previous node in each element. If a list is sorted, the linear order
+// of the list corresponds to the linear order of keys stored in elements of the list; the
+// minimum element is then the head of the list, and the maximum element is the
+// tail. If the list is unsorted, the elements can appear in any order. In a circular list,
+// the pointer to the previous node of the head of the list points to the tail, and the next pointer of
+// the tail of the list points to the head.
+//
+// Here we implement operations on doubly linked lists. 
+
 typedef struct Node{
-    int data;
-    struct Node *next;
-    struct Node *prev;
+    int data;           // store the actual key
+    struct Node *next;  // pointer to the next node
+    struct Node *prev;  // pointer to the previous node
 } node;
 
 void insertNodeAtFront(node **, int);
@@ -126,4 +141,3 @@ void display(node **head){
         printf("NULL\n\n");
     }
 }
-
