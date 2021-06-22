@@ -94,7 +94,7 @@ void insertNodeAtPos(node **head, int val, int pos){
     node *newNode = malloc(sizeof(node));
     newNode->value = val;
     if(pos == 0){
-        if(head == NULL){
+        if(*head == NULL){
             *head = newNode;
             (*head)->next = NULL;
         }
@@ -120,7 +120,7 @@ void insertNodeAtPos(node **head, int val, int pos){
 }
 
 void deleteNodeAtPos(node **head, int pos){
-    if(head == NULL){
+    if(*head == NULL){
         printf("List is empy\n");
     }
     else{
@@ -147,7 +147,7 @@ void deleteNodeAtPos(node **head, int pos){
 }
 
 void updateValueAtPos(node **head, int newVal, int pos){
-    if(head != NULL){
+    if(*head != NULL){
         if(pos >= 0 && pos < llSize(head)){
             node *ptr = *head;
             for(int i = 0; ptr != NULL; ptr = ptr->next, i++){
@@ -167,7 +167,7 @@ void updateValueAtPos(node **head, int newVal, int pos){
 
 void updateValues(node **head, int oldVal, int newVal){
     int flag = 0;
-    if(head == NULL){
+    if(*head == NULL){
         printf("List is empty\n");
     }
     else{
@@ -186,7 +186,7 @@ void updateValues(node **head, int oldVal, int newVal){
 void search(node **head, int key){
     int flag = 0, pos = -1;
 
-    if(head == NULL){
+    if(*head == NULL){
         printf("List is empty\n");
     }
     else{
