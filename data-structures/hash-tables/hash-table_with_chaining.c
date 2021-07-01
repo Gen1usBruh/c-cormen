@@ -1,75 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Simple implementation of hash table with chaining using doubly linked list and array of constant size
 // No operation (function) provided supports error-checking
 
-#define MAXSIZE 23
+#define CAPACITY 701
 
 typedef struct Node{
+    char *key;
     int data;        
     struct Node *next;  
     struct Node *prev;  
 } node;
 
-node* table[MAXSIZE] = {NULL};
-
-unsigned hash(char* key);
-void insertNodeAtEnd(node **head, int value);
-void insert(char* key, int value);
-node* search(unsigned key);
-void delete(char* key);
-void display(void);
+typedef struct HashTable{
+    node** entries;
+} hashTable;
 
 
-int main(int argc, char* argv[]){
-    
-    insert("amir", 1);
-    insert("mapelle", 2);
-    insert("azim", 3);
-    insert("dfgdfg", 4);
-    insert("usyuvfs", 5);
-    insert("amidfg", 6);
-    insert("mapeldsfle", 7);
-    insert("azidsfm", 8);
-    insert("dfgddfgfg", 9);
-    insert("usyuvdfvfs", 10);
-    insert("amsdfir", 11);
-    insert("mapsredfelle", 12);
-    insert("azimfdg", 13);
-    insert("dfewtgdfg", 14);
-    insert("usyxcvbuvfs", 15);
-    insert("amirfdg", 16);
-    insert("mapserelle", 17);
-    insert("azidgm", 18);
-    insert("dfgdhdfsdfg", 19);
-    insert("usywwruvfs", 20);
-
-    display();
-    
-    printf("\n\n");
-
-    delete("azim");
-    delete("dfgddfgfg");
-
-    printf("\n\n");
-
-    display();
-
-}
-
-
-unsigned hash(char *key){
-    unsigned hval;
-    for(hval = 0; *key != '\0'; key++){
-        hval = *key + 31 * hval;
+unsigned int hash(const char *key) {
+    unsigned long int value = 0;
+    unsigned int i = 0;
+    unsigned int key_len = strlen(key);
+    for(; i < key_len; ++i){
+        value = value * 37 + key[i];
     }
-    return hval % MAXSIZE;
+    value = value % CAPACITY;
+
+    return value;
 }
 
-void insertNodeAtEnd(node **head, int value){
+hashTable* newHashTable(){
+    hashTable* table = malloc(sizeof(hashTable));
+    table->entries = malloc(sizeof(node*) * CAPACITY);
+    for(int i = 0; i < CAPACITY; i++){
+        table->entries[i] = NULL;
+    }
+
+    return table; 
+}
+
+void insertNodeAtEnd(node **head, const char* key, int value){
     node *new_node = malloc(sizeof(node));
     node *last = *head;
+    new_node->key = malloc(strlen(key) + 1);
+    strcpy(new_node->key, key);
     new_node->data = value;
     new_node->next = NULL;
     if(*head == NULL){
@@ -84,69 +60,134 @@ void insertNodeAtEnd(node **head, int value){
     last->next = new_node;
 }
 
-void insert(char* key, int value){
-    printf("User key: %s --> ", key);
-    unsigned hashedKey = hash(key);
-    printf("It's hash: %d\n", hashedKey);
-    if(table[hashedKey] == NULL){
-        node* slotHead = NULL;
-        insertNodeAtEnd(&slotHead, value);
-        table[hashedKey] = slotHead;
+node* search(node* tryNode, const char* key){
+    if(tryNode == NULL){
+        return NULL;
     }
-    else{
-        insertNodeAtEnd(&table[hashedKey], value);
+
+    for(node* temp = tryNode; temp != NULL; temp = temp->next){
+        if(strcmp(temp->key, key) == 0){
+            return temp;
+        }
     }
 }
 
-void delete(char* key){
-    unsigned hashedKey = hash(key);
-    node* temp = table[hashedKey];
-    if(temp->next == NULL){
-        table[hashedKey] = NULL;
-        free(temp);
+void insert(hashTable* table, const char* key, int value){
+    unsigned int slot = hash(key);
+    
+    node* entry = search(table->entries[slot], key);
+
+    if(entry == NULL){
+        insertNodeAtEnd(&table->entries[slot], key, value);
     }
     else{
-        int num;
-        printf("Enter the value of the key: ");
-        scanf("%d", &num);
-        temp = table[hashedKey];
-        for(; temp != NULL; temp = temp->next){
-            if(temp->data == num){
+        entry->data = value;
+    }  
+}
+
+int popKey(hashTable* table, const char* key){
+    unsigned int slot = hash(key);
+    node* entry = search(table->entries[slot], key);
+    if(entry == NULL){
+        return 0;
+    }
+    else{
+        return entry->data;
+    }
+}
+
+void deleteKey(hashTable* table, const char* key){
+    unsigned int slot = hash(key);
+    node* entry = table->entries[slot];
+    if(entry == NULL) {
+        return;
+    }
+    int idx = 0;
+
+    while(entry != NULL) {
+        if(strcmp(entry->key, key) == 0) {
+            // first item and no next entry
+            if(entry->next == NULL && idx == 0) {
+                table->entries[slot] = NULL;
+            }
+            // first item with a next entry
+            if(entry->next != NULL && idx == 0) {
+                table->entries[slot] = entry->next;
+                entry->next->prev = table->entries[slot];
+                entry->prev = entry->next = NULL;
+            }
+            // last item
+            if(entry->next == NULL && idx != 0) {
+                entry->prev->next = NULL;
+                entry->prev = NULL;
+            }
+            // middle item
+            if(entry->next != NULL && idx != 0) {
+                entry->prev->next = entry->next;
+                entry->next->prev = entry->prev;
+                entry->prev = entry->next = NULL;
+            }
+
+            free(entry->key);
+            free(entry);
+
+            return;
+        }
+
+        entry = entry->next;
+        ++idx;
+    }
+}
+
+void dumpHashTable(hashTable* table) {
+    for (int i = 0; i < CAPACITY; ++i) {
+        node* entry = table->entries[i];
+
+        if (entry == NULL) {
+            continue;
+        }
+
+        printf("slot[%4d]: ", i);
+
+        for(;;) {
+            printf("%s = %d ", entry->key, entry->data);
+
+            if (entry->next == NULL) {
                 break;
             }
-        }
-        if(temp == NULL){
-            printf("No such value");
-        }
-        else if(temp == table[hashedKey]){
-            temp->next->prev = NULL;
-            table[hashedKey] = temp->next;
-            temp->next = NULL;
-        }
-        else if(temp->next == NULL){
-            temp->prev->next = NULL;
-            temp->prev = NULL;
-        }
-        else{
-            temp->prev->next = temp->next;
-            temp->next->prev = temp->prev;
-            temp->next = temp->prev = NULL;
-        }
-        free(temp);
-    }
 
-    printf("\n\nDeletion completed!\n\n");
+            entry = entry->next;
+        }
+
+        printf("\n");
+    }
 }
 
-void display(void){
-    for(int i = 0; i < MAXSIZE; i++){
-        if(table[i] != NULL){
-            printf("[ %d ] --> ", i);
-            for(node* temp = table[i]; temp != NULL; temp = temp->next){
-                printf("| %d | -- ", temp->data);
-            }
-            printf("NULL\n");
-            printf("||\n");
-        }
-    }
+
+int main(int argc, char* argv[]){
+    hashTable* myTable = newHashTable();
+    
+    insert(myTable, "name1", 1);
+    insert(myTable, "name2", 2);
+    insert(myTable, "name3", 3);
+    insert(myTable, "name4", 4);
+    insert(myTable, "name5", 5);
+    insert(myTable, "name6", 6);
+    insert(myTable, "name7", 7);
+
+    dumpHashTable(myTable);
+    printf("\n");
+
+    insert(myTable, "name1", 8);
+    
+    deleteKey(myTable, "name1");
+    dumpHashTable(myTable);
+    printf("\n");
+
+    insert(myTable, "name1", 1);
+
+    dumpHashTable(myTable);
+
+    printf("%d", popKey(myTable, "name1"));
+
 }
