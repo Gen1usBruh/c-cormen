@@ -5,6 +5,8 @@
 // Simple implementation of hash table with chaining using doubly linked list and array of constant size
 // No operation (function) provided supports error-checking
 
+// Implementation of hash table with string value instead and singly linked list: https://github.com/engineer-man/youtube/blob/master/077/hashtable.c
+
 #define CAPACITY 701
 
 typedef struct Node{
