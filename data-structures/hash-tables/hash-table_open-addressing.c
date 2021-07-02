@@ -5,7 +5,6 @@
 #define CAPACITY 701
 
 typedef struct Slot{
-    int probeCount;
     int deleteMe;
     char *key;
     int data;         
@@ -48,7 +47,6 @@ void insert(hashTable* table, const char* key, int value){
             newSlot->key = malloc(strlen(key) + 1);
             strcpy(newSlot->key, key);
             newSlot->data = value;
-            newSlot->probeCount = i;
             newSlot->deleteMe = 0;   
             table->entries[hashedKey] = newSlot;
             return;
