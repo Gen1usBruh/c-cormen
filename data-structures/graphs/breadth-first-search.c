@@ -181,6 +181,8 @@ void BFS(graph* graph, int vertexIndex) {
 //   scanning adjacency lists is O(E). The overhead for initialization is O(V), and
 //   thus the total running time of the BFS procedure is O(V + E). Thus, breadth-first
 //   search runs in time linear in the size of the adjacency-list representation of G.
+//
+//   But in my implementation not all things are as they've been stated above
 
 
 int main(int argc, char* argv[]) {
