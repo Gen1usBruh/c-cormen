@@ -2,14 +2,43 @@
 #include <stdlib.h>
 #include <limits.h>
 
+// The strategy followed by depth-first search is, as its name implies, to search
+// "deeper" in the graph whenever possible.Depth-first search explores edges out
+// of the most recently discovered vertex v that still has unexplored edges leaving it.
+// Once all of v’s edges have been explored, the search "backtracks" to explore edges
+// leaving the vertex from which v was discovered. This process continues until we
+// have discovered all the vertices that are reachable from the original source vertex.
+// If any undiscovered vertices remain, then depth-first search selects one of them as
+// a new source, and it repeats the search from that source. The algorithm repeats this
+// entire process until it has discovered every vertex.
+// As in breadth-first search, whenever depth-first search discovers a vertex v during
+// a scan of the adjacency list of an already discovered vertex u, it records this
+// event by setting v’s predecessor attribute v.p (or v.parent) to u. Unlike breadth-first search,
+// whose predecessor subgraph forms a tree, the predecessor subgraph produced by
+// a depth-first search may be composed of several trees, because the search may
+// repeat from multiple sources.
+// As in breadth-first search, depth-first search colors vertices during the search to
+// indicate their state. Each vertex is initially white, is grayed when it is discovered
+// in the search, and is blackened when it is finished, that is, when its adjacency list
+// has been examined completely. This technique guarantees that each vertex ends up
+// in exactly one depth-first tree, so that these trees are disjoint.
+// Besides creating a depth-first forest, depth-first search also timestamps each vertex.
+// Each vertex v has two timestamps: the first timestamp v.d (or v.discover) records when v
+// is first discovered (and grayed), and the second timestamp v.f (or v.finish) records when the
+// search finishes examining v’s adjacency list (and blackens v).These timestamps
+// provide important information about the structure of the graph and are generally
+// helpful in reasoning about the behavior of depth-first search.
+//
+//The running time of DFS is θ(V + E).
+
 #define CAPACITY 10
 
 typedef struct Node {
     int data;
-    int discover;
-    int color;
-    int finish;
-    struct Node* parent;
+    int discover;            // The procedure DFS below records when it discovers vertex u in the attribute u.discover
+    int finish;              // and when it finishes exploring vertex u in the attribute u.finish . These timestamps are integers
+    int color;               // between 1 and 2|V|, since there is one discovery event and one finishing event for                             
+    struct Node* parent;     // each of the |V| vertices.
     struct Node* next;
     struct Node* prev;
 } node;
@@ -75,7 +104,7 @@ void dumpGraph(graph* graph) {
     }
 }
 
-int time = 0;   // helper variable
+int time = 0;   // helper variable for timestamping
 void DFSVisit(graph* graph, node* u) {
     ++time;
     u->discover = time;
