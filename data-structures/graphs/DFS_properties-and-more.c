@@ -34,18 +34,21 @@
 //   there is a path from u to v consisting entirely of white vertices.
 
 
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
+// Classification of edges:
+//  We can define four edge types in terms of the depth-first forest G' produced by
+//  a depth-first search on G:
+//  1. Tree edges are edges in the depth-first forest G'. Edge (u,v) is a tree edge if v
+//  was first discovered by exploring edge (u,v).
+//  2. Back edges are those edges (u,v) connecting a vertex u to an ancestor v in a
+//  depth-first tree. We consider self-loops, which may occur in directed graphs, to
+//  be back edges.
+//  3. Forward edges are those nontree edges (u,v) connecting a vertex u to a descendant
+//  v in a depth-first tree.
+//  4. Cross edges are all other edges. They can go between vertices in the same
+//  depth-first tree, as long as one vertex is not an ancestor of the other, or they can
+//  go between vertices in different depth-first trees.
+//
+// Theorem:
+//  In a depth-first search of an undirected graph G, every edge of G is either a tree
+//  edge or a back edge.
+//
