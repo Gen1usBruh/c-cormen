@@ -2,6 +2,16 @@
 #include <stdlib.h>
 #include <limits.h>
 
+// A topological sort of a a directed acyclic graph (dag), G = (V,E) is a linear ordering 
+// of all its vertices such that if G contains an edge (u, v), then u appears before v in 
+// the ordering. (If the graph contains a cycle, then no linear ordering is possible.) 
+// We can view a topological sort of a graph as an ordering of its vertices along a 
+// horizontal line so that all directed edges go from left to right.
+    
+// Lemma:
+//     A directed graph G is acyclic if and only if a depth-first search of G yields no back edges.  
+
+// Running time is θ(V + E).
 
 
 #define CAPACITY 10
