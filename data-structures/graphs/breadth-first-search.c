@@ -203,7 +203,7 @@ int main(int argc, char* argv[]) {
     // insert(myGraph, 5, 1);
     // insert(myGraph, 5, 2);
     
-    // if you need a node in directed graph that points to nowhere, or in undirected graph a totally separate vertex, then:
+    // if you need a vertex in directed graph that points to nowhere, or in undirected graph a totally separate vertex, then:
     // insertNodeAtEnd(&myGraph->adjl[i], i), where i should be the of the same value 
 
     insert(myGraph, 1, 4);   // second argument is the source vertex, third is the neighbour
