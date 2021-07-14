@@ -164,6 +164,9 @@ int main(int argc, char* argv[]) {
     insert(myGraph, 9, 4);
     insert(myGraph, 9, 2);
     insert(myGraph, 9, 7);*/
+    
+    // if you need a vertex in directed graph that points to nowhere, or in undirected graph a totally separate vertex, then:
+    // insertNodeAtEnd(&myGraph->adjl[i], i), where i should be the of the same value 
 
     insert(myGraph, 1, 3);   // Edge from 1 to 3 only
     insert(myGraph, 2, 1);
