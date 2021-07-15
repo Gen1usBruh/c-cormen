@@ -98,14 +98,6 @@ void topologicalSort(node* vertex) {
     insertNodeAtFront(&myList, vertex);
 }
 
-//N(1) : 2 4 
-//N(2) : 3 8 	
-//N(3) : 4 	
-//N(4) : 3 7 	
-//N(5) : 1 2 	
-//N(6) : 3 	
-//N(7) : 
-//N(8) : 5
 void transpose(graph* oldGraph, graph* newGraph) {
     for (int i = 1; i < CAPACITY; i++) {
         if (oldGraph->adjl[i] != NULL) {
@@ -113,7 +105,7 @@ void transpose(graph* oldGraph, graph* newGraph) {
             node* entry = oldGraph->adjl[i]->next;
             for (; entry != NULL; entry = entry->next) {
                 insert(newGraph, entry->data, i);
-                newGraph->adjl[entry->data]->finish = oldGraph->adjl[entry->data]->finish;
+                newGraph->adjl[entry->data]->finish = oldGraph->adjl[entry->data]->finish;  // additional requirement (can be ommited in pure form)
             }
         }
     }
@@ -137,7 +129,7 @@ void DFSVisit(graph* graph, node* u) {
     u->color = 2;   //black
     ++time;
     u->finish = time;
-    topologicalSort(u);
+    topologicalSort(u);  // topological sort works when vertex is "finished"
 }
 void DFS(graph* graph) {
     for (int i = 0; i < CAPACITY; i++) {
@@ -156,7 +148,8 @@ void DFS(graph* graph) {
 
 }
 
-void DFSVisitTrans(graph* graph, node* u) {
+// modified for transpose graph
+void DFSVisitTrans(graph* graph, node* u) {  
     ++time;
     u->discover = time;
     u->color = 1;   //gray
