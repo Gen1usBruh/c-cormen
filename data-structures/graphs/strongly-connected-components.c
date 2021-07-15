@@ -230,7 +230,7 @@ int main(int argc, char** argv) {
 
     printf("\n\n");
 
-    dumpGraph(trans);
+    dumpGraph(trans);  // when graph is dumped just look for trees using finishing times, those will be SCC
 
     printf("\n\n");
 
