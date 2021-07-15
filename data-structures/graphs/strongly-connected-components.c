@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define CAPACITY 10
 
@@ -53,7 +52,7 @@ void insert(graph* graph, int vertexIndex, int vertexAdj) {
 }
 
 void dumpGraph(graph* graph) {
-    for (int i = 1; i < CAPACITY; ++i) {
+    for (int i = 0; i < CAPACITY; ++i) {
         node* entry = graph->adjl[i];
         if (entry == NULL) {
             continue;
@@ -75,13 +74,13 @@ void dumpGraph(graph* graph) {
     }
 }
 
-typedef struct TopNode {
+typedef struct TopNode {  // for topological sort
     node* data;
     struct TopNode* next;
     struct TopNode* prev;
 } topNode;
 
-topNode* myList = NULL;
+topNode* myList = NULL;  // global to make sorting easier
 
 void insertNodeAtFront(topNode** head, node* value) {
     topNode* new_node = malloc(sizeof(topNode));
@@ -99,21 +98,20 @@ void topologicalSort(node* vertex) {
 }
 
 void transpose(graph* oldGraph, graph* newGraph) {
-    for (int i = 1; i < CAPACITY; i++) {
+    for (int i = 0; i < CAPACITY; i++) {
         if (oldGraph->adjl[i] != NULL) {
-            insertNodeAtEnd(&newGraph->adjl[i], i);
+            insertNodeAtEnd(&newGraph->adjl[i], i);  // make sure to replicate all nodes from old graph
             node* entry = oldGraph->adjl[i]->next;
             for (; entry != NULL; entry = entry->next) {
                 insert(newGraph, entry->data, i);
-                newGraph->adjl[entry->data]->finish = oldGraph->adjl[entry->data]->finish;  // additional requirement (can be ommited in pure form)
             }
         }
     }
     
 }
 
-int time = 0;
-void DFSVisit(graph* graph, node* u) {
+int time;
+void DFSVisit(graph* graph, node* u) {  // DFS-Visit with call to topological sort inside
     ++time;
     u->discover = time;
     u->color = 1;   //gray
@@ -129,7 +127,7 @@ void DFSVisit(graph* graph, node* u) {
     u->color = 2;   //black
     ++time;
     u->finish = time;
-    topologicalSort(u);  // topological sort works when vertex is "finished"
+    topologicalSort(u);
 }
 void DFS(graph* graph) {
     for (int i = 0; i < CAPACITY; i++) {
@@ -148,8 +146,7 @@ void DFS(graph* graph) {
 
 }
 
-// modified for transpose graph
-void DFSVisitTrans(graph* graph, node* u) {  
+void DFSVisitTrans(graph* graph, node* u) {  // standard DFS-Visit
     ++time;
     u->discover = time;
     u->color = 1;   //gray
@@ -166,25 +163,29 @@ void DFSVisitTrans(graph* graph, node* u) {
     ++time;
     u->finish = time;
 }
-
-void strongCC(graph* oldGraph, graph* newGraph) {
-    DFS(oldGraph);
-    transpose(oldGraph, newGraph);
-    time = 0;
+void DFSTrans(graph* graph) {
     for (int i = 0; i < CAPACITY; i++) {
-        if (newGraph->adjl[i] != NULL) {
-            newGraph->adjl[i]->color = 0;
-            newGraph->adjl[i]->parent = NULL;
+        if (graph->adjl[i] != NULL) {
+            graph->adjl[i]->color = 0;
+            graph->adjl[i]->parent = NULL;
         }
     }
     topNode* current = myList;
     for (; current != NULL; current = current->next) {
-        if (newGraph->adjl[current->data->data] != NULL) {
-            if (newGraph->adjl[current->data->data]->color == 0) {
-                DFSVisitTrans(newGraph, newGraph->adjl[current->data->data]);
+        if (graph->adjl[current->data->data] != NULL) {
+            if (graph->adjl[current->data->data]->color == 0) {
+                DFSVisitTrans(graph, graph->adjl[current->data->data]);
             }
         }
     }
+}
+
+void strongCC(graph* oldGraph, graph* newGraph) {
+    time = 0;  // make sure it's zero
+    DFS(oldGraph);
+    transpose(oldGraph, newGraph);
+    time = 0;
+    DFSTrans(newGraph); 
 }
 
 
@@ -193,33 +194,33 @@ int main(int argc, char** argv) {
 
     graph* trans = newGraph();
 
-     insert(myGraph, 1, 5);
-     insert(myGraph, 2, 1);   
-     insert(myGraph, 2, 3);
-     insert(myGraph, 2, 8);
-     insert(myGraph, 3, 2);   
-     insert(myGraph, 3, 4);
-     insert(myGraph, 4, 1);   // --> Directed graph test
-     insert(myGraph, 4, 7);
-     insert(myGraph, 5, 8);
-     insert(myGraph, 6, 3);  
-     insert(myGraph, 6, 6);
-     insert(myGraph, 6, 7);
-     insert(myGraph, 7, 4);   
-     insert(myGraph, 8, 1);
+     //insert(myGraph, 1, 5);
+     //insert(myGraph, 2, 1);   
+     //insert(myGraph, 2, 3);
+     //insert(myGraph, 2, 8);
+     //insert(myGraph, 3, 2);   
+     //insert(myGraph, 3, 4);
+     //insert(myGraph, 4, 1);   // --> Directed graph test
+     //insert(myGraph, 4, 7);
+     //insert(myGraph, 5, 8);
+     //insert(myGraph, 6, 3);  
+     //insert(myGraph, 6, 6);
+     //insert(myGraph, 6, 7);
+     //insert(myGraph, 7, 4);   
+     //insert(myGraph, 8, 1);
 
-    //insert(myGraph, 1, 2);
-    //insert(myGraph, 1, 4);
-    //insert(myGraph, 2, 3);
-    //insert(myGraph, 2, 8);
-    //insert(myGraph, 3, 4);
-    //insert(myGraph, 4, 3);
-    //insert(myGraph, 4, 7);   // --> Directed graph test
-    //insert(myGraph, 5, 1);
-    //insert(myGraph, 5, 2);
-    //insert(myGraph, 6, 3);
-    //insert(myGraph, 8, 5);
-    //insertNodeAtEnd(&myGraph->adjl[7], 7);   //create an empty node, since vertex at 7 points to nowhere 
+    insert(myGraph, 1, 2);
+    insert(myGraph, 1, 4);
+    insert(myGraph, 2, 3);
+    insert(myGraph, 2, 8);
+    insert(myGraph, 3, 4);
+    insert(myGraph, 4, 3);
+    insert(myGraph, 4, 7);   // --> Directed graph test
+    insert(myGraph, 5, 1);
+    insert(myGraph, 5, 2);
+    insert(myGraph, 6, 3);
+    insert(myGraph, 8, 5);
+    insertNodeAtEnd(&myGraph->adjl[7], 7);   //create an empty node, since vertex at 7 points to nowhere 
 
     DFS(myGraph);
 
