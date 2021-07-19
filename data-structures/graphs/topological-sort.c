@@ -61,6 +61,9 @@ void insert(graph* graph, int vertexIndex, int vertexAdj) {
     if (graph->adjl[vertexIndex] == NULL) {
         insertNodeAtEnd(&graph->adjl[vertexIndex], vertexIndex);
     }
+    if (graph->adjl[vertexAdj] == NULL) {
+        insertNodeAtEnd(&graph->adjl[vertexAdj], vertexAdj);
+    }
     insertNodeAtEnd(&graph->adjl[vertexIndex], vertexAdj);
 }
 
