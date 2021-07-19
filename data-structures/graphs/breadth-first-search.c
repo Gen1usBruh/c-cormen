@@ -74,6 +74,9 @@ void insert(graph* graph, int vertexIndex, int vertexAdj) {
     if (graph->adjl[vertexIndex] == NULL) {
         insertNodeAtEnd(&graph->adjl[vertexIndex], vertexIndex);   // head of the dl-list points to the actual vertex
     }
+    if (graph->adjl[vertexAdj] == NULL) {
+        insertNodeAtEnd(&graph->adjl[vertexAdj], vertexAdj);
+    }
     insertNodeAtEnd(&graph->adjl[vertexIndex], vertexAdj);   // add adjacent(neighbouring) vertices after at the end
 }
 
