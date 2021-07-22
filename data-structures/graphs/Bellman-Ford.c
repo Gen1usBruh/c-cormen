@@ -3,6 +3,23 @@
 #include <limits.h>
 #include <inttypes.h>
 
+// The Bellman-Ford algorithm solves the single-source shortest-paths problem in
+// the general case in which edge weights may be negative. Given a weighted, directed
+// graph G = (V,E) with source s and weight function w : E -> R, the
+// Bellman-Ford algorithm returns a boolean value indicating whether or not there is
+// a negative-weight cycle that is reachable from the source. If there is such a cycle,
+// the algorithm indicates that no solution exists. If there is no such cycle, the
+// algorithm produces the shortest paths and their weights.
+//
+// The Bellman-Ford algorithm runs in time O(VE), where E = O(V^2)
+//
+// Lemma:
+//     Let G = (V,E) be a weighted, directed graph with source s and weight function
+//     w : E -> R, and assume that G contains no negative-weight cycles that are
+//     reachable from s. Then, after the |V| - 1 iterations of the very first for loop
+//     of BELLMAN-FORD, we have v.d = 𝛿(s,v) for all vertices v that are reachable
+//     from s (If we have more than |V| - 1, we will get into cycle). 
+
 #define CAPACITY 10
 
 typedef struct Node {
