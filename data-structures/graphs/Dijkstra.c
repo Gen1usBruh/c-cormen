@@ -4,6 +4,24 @@
 #include <inttypes.h>
 
 
+// Dijkstra’s algorithm solves the single-source shortest-paths problem on a weighted,
+// directed graph G = (V,E) for the case in which all edge weights are nonnegative.
+// Dijkstra’s algorithm maintains a set S of vertices whose final shortest-path
+// weights from the source s have already been determined. The algorithm repeatedly
+// selects the vertex u ∈ V - S with the minimum shortest-path estimate, adds u
+// to S, and relaxes all edges leaving u. In the following implementation, we use a
+// min-priority queue Q of vertices, keyed by their d (upperBound) values.
+// Because Dijkstra’s algorithm always chooses the "lightest" or "closest" vertex
+// in V - S to add to set S, we say that it uses a greedy strategy.
+//
+// The running time of Dijkstra’s algorithm depends on how we implement the
+// min-priority queue.
+// Consider the case in which we maintain the min-priority.
+// queue by taking advantage of the vertices being numbered 1 to |V|. We simply
+// store v.d in the vth entry of an array. Total time of O(V^2 + E) = O(V^2).
+//
+// We can in fact achieve a running time of O(VlgV + E) by implementing the
+// min-priority queue with a Fibonacci heap.
 
 #define CAPACITY 10
 
@@ -208,11 +226,11 @@ int main(int argc, char* argv[]) {
     insert(myGraph, 9, 5, 6);
     insert(myGraph, 9, 7, 7);
 
-    // if you need a vertex in directed graph that points to nowhere, or in undirected graph a totally separate vertex, then:
+    // if you need a totally separate vertex in directed and undirected graphs:
     // insertNodeAtEnd(&myGraph->adjl[i], i), where i should be the of the same value 
 
-    dijkstra(myGraph, 7);
-
+    dijkstra(myGraph, 7);    // follow the parents and get a scheme in your head
+                             // each Upperbound is the shortest path to that vertex
     dumpGraph(myGraph);
 
 }
